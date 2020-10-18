@@ -1,0 +1,30 @@
+version: '3'
+services:
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        ports:
+            - '3000:3000'
+        volumes:
+            - /app/node_modules
+            - .:/app
+        # If you are using any version of Windows and your React app
+        # is not automatically reloading after a code change,
+        # you can add this environment variable to your compose file:
+        # https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/19243026#questions
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+        #Add stdin_open property to prevent react app exit when starting with docker compose
+        #https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/18562132#notes
+        stdin_open: true
+    tests:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        volumes:
+            - /app/node_modules
+            - .:/app
+        command: ['npm', 'run', 'test']
+        environment:
+            - CHOKIDAR_USEPOLLING=true
